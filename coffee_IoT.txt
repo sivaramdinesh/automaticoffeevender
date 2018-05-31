@@ -1,0 +1,156 @@
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char auth[] = "18ca64795b3749f7809e451e48b1f79b";
+
+char ssid[] = "dinesh";
+char pass[] = "dineshdinu";
+
+
+int lemon_tea=D1;
+int tea=D2;
+int coffee=D4;
+
+int ltcount=0;
+int tcount=0;
+int ccount=0;
+      
+WidgetLCD lcd(V1);
+
+void setup()
+{
+  // Debug console
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+
+  pinMode(tea, OUTPUT);
+  pinMode(coffee, OUTPUT);
+  pinMode(lemon_tea, OUTPUT);
+    lcd.clear();
+      digitalWrite(D1, LOW);
+      digitalWrite(D2, LOW);
+      digitalWrite(D4, LOW);
+
+  Blynk.setProperty(V1,"color","#0c990c");
+}
+
+
+void loop()
+{
+  Blynk.run();
+int s1=digitalRead(D0);
+int s2=digitalRead(D3);
+int s3=digitalRead(D5);
+int s4=digitalRead(D9);
+
+int s5=digitalRead(D10);
+
+if(s1==1 and s3==1 and s4==1)
+{
+  ltcount=0;
+  tcount=0;
+  ccount=0;
+  }
+
+  if(s1==1 and s3==1)
+{
+  int lt=digitalRead(D8);
+   int t=digitalRead(D6);
+  int c=digitalRead(D7);
+
+  lcd.clear();
+  Blynk.setProperty(V1,"color","#0c990c");
+  
+  lcd.print(0,0,lt);
+  lcd.print(5,0,t);
+  lcd.print(10,0,c);
+  
+  if(lt==1)
+  {
+    digitalWrite(D1, HIGH);
+    
+      ltcount=ltcount+1;
+      lcd.print(0,1,"LTC=");
+      lcd.print(4,1,ltcount);
+      delay(1000);
+      
+    }
+  else if(t==1)
+    {
+     digitalWrite(D2, HIGH);
+     
+      tcount=tcount+1;
+      lcd.print(0,1,"TC=");
+      lcd.print(3,1,tcount);
+      delay(1000);
+ 
+      }
+  else if(c==1)
+      {
+       digitalWrite(D4, HIGH);
+       
+      ccount=ccount+1;
+      lcd.print(0,1,"CC=");
+      lcd.print(3,1,ccount);
+      delay(1000);
+      }
+    
+   else
+    {
+      lcd.clear();
+      digitalWrite(D1, LOW);
+      digitalWrite(D2, LOW);
+      digitalWrite(D4, LOW);
+    }
+}
+else
+    {
+      lcd.clear();
+      digitalWrite(D1, LOW);
+      digitalWrite(D2, LOW);
+      digitalWrite(D4, LOW);
+    }
+    
+  if(s1==1 and s3==1 and s5==1)
+  {
+    lcd.clear();
+    lcd.print(0,0,"LTC=");
+    lcd.print(4,0,ltcount);
+    delay(500);
+    lcd.print(7,0,"TC=");
+    lcd.print(10,0,tcount);
+    delay(500);
+    lcd.print(0,1,"CC=");
+    lcd.print(3,1,ccount);
+    delay(500);
+    }
+    else
+    {
+      lcd.clear();
+      }
+
+      if(ltcount==65)
+      {
+        lcd.clear();
+        Blynk.setProperty(V1,"color","#e80606");
+        lcd.print(0,0,"Lemon Tea REFIL");
+        delay(1000);
+        }
+        
+        if(tcount==65)
+      {
+        lcd.clear();
+        Blynk.setProperty(V1,"color","#e80606");
+        lcd.print(0,0,"Tea REFIL");
+        delay(1000);
+        }
+
+        if(ccount==65)
+      {
+        lcd.clear();
+        Blynk.setProperty(V1,"color","#e80606");
+        lcd.print(0,0,"Coffe Tea REFIL");
+        delay(1000);
+        }
+}
